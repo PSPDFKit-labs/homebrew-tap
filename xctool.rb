@@ -1,9 +1,9 @@
 class Xctool < Formula
   desc "Drop-in replacement for xcodebuild with a few extra features"
   homepage "https://github.com/PSPDFKit-labs/xctool"
-  url "https://github.com/PSPDFKit-labs/xctool/archive/0.2.8.pspdfkit3.tar.gz"
-  sha256 "a2221c3202cb20f350fb40b8006a65c701119a857d0b02b2d1ee42ab02ffd5a9"
-  version "0.2.8.pspdfkit3"
+  url "https://github.com/PSPDFKit-labs/xctool/archive/0.2.9.pspdfkit1.tar.gz"
+  sha256 "db6f67af2e4b0198a9d0d5780740c164c1eac5fa20b5d7c96a51c4379d70ace1"
+  version "0.2.9.pspdfkit1"
   head "https://github.com/PSPDFKit-labs/xctool.git"
 
   depends_on :xcode => "6.0"
