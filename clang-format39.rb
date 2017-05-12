@@ -1,33 +1,13 @@
 class ClangFormat39 < Formula
-  desc "Formatting tools for C, C++, Obj-C, Java, JavaScript, TypeScript"
+  desc "Formatting tools for C, C++, Obj-C, Java, JavaScript, TypeScript. Local modifications for Objective-C code."
   homepage "http://clang.llvm.org/docs/ClangFormat.html"
   version "2016-12-09"
 
   stable do
-    url "http://llvm.org/svn/llvm-project/llvm/tags/google/stable/2016-12-09/", :using => :svn
+    url "https://github.com/pspdfkit-labs/llvm.git", :branch => "pspdfkit/format-stable"
 
     resource "clang" do
-      url "http://llvm.org/svn/llvm-project/cfe/tags/google/stable/2016-12-09/", :using => :svn
-    end
-
-    resource "libcxx" do
-      url "http://llvm.org/releases/3.9.0/libcxx-3.9.0.src.tar.xz"
-      sha256 "d0b38d51365c6322f5666a2a8105785f2e114430858de4c25a86b49f227f5b06"
-    end
-  end
-
-  bottle do
-    cellar :any_skip_relocation
-    sha256 "8ba03b3ca6baf6b5bc29dcb5d62dc8d9a4b5e9baffbf6b3289db7018e378d0e2" => :sierra
-    sha256 "c426bb3d06a164940625c59fe848dd7f7bb77f80ef2d2bcc007d73a86c1c81e5" => :el_capitan
-    sha256 "e4fa1db39665664088b2e4c0926013e5e8c1e09abaddea5615faf232fd815f9c" => :yosemite
-  end
-
-  head do
-    url "http://llvm.org/svn/llvm-project/llvm/trunk/", :using => :svn
-
-    resource "clang" do
-      url "http://llvm.org/svn/llvm-project/cfe/trunk/", :using => :svn
+      url "https://github.com/pspdfkit-labs/clang.git", :branch => "pspdfkit/format-stable"
     end
 
     resource "libcxx" do
@@ -37,8 +17,7 @@ class ClangFormat39 < Formula
   end
 
   depends_on "cmake" => :build
-  depends_on "ninja" => :build
-  depends_on "subversion" => :build
+  depends_on "ninja" => :build  
 
   def install
     (buildpath/"projects/libcxx").install resource("libcxx")
