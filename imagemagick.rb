@@ -4,15 +4,15 @@ class Imagemagick < Formula
   # Please always keep the Homebrew mirror as the primary URL as the
   # ImageMagick site removes tarballs regularly which means we get issues
   # unnecessarily and older versions of the formula are broken.
-  url "https://dl.bintray.com/homebrew/mirror/imagemagick-7.0.7-7.tar.xz"
-  mirror "https://www.imagemagick.org/download/ImageMagick-7.0.7-7.tar.xz"
-  sha256 "01b7171b784fdc689697fa35fbfa70e716a9e1608d45f81015ba78f6583f1dcf"
+  url "https://dl.bintray.com/homebrew/mirror/imagemagick-7.0.7-28.tar.xz"
+  mirror "https://www.imagemagick.org/download/ImageMagick-7.0.7-28.tar.xz"
+  sha256 "e8311c2dd536367808a633aa3f4f0f6b1a34d04ed06b3db59c21d43cab41d4ce"
   head "https://github.com/ImageMagick/ImageMagick.git"
 
   bottle do
-    sha256 "7ba7870bae8a8b3236240cbbb6f9fde5598d78dd567c936857dd1470f7e3c7af" => :high_sierra
-    sha256 "7fe3ef5dc80215fb9050f441d1d00191233b90da646b3eb60f0295f00cf38169" => :sierra
-    sha256 "3da2ca31353e9139acd51037696a4b0bd5e2ebecdcd9f06cef1d889836e99277" => :el_capitan
+    sha256 "bec28c32f9b60bfc0a63e6804805ea83a02a8d81c83d2f8c9a3194cce5e055e9" => :high_sierra
+    sha256 "381c4679966805dca659ed1ce84dcb6684747947ca337a276ae0c913732bc9e9" => :sierra
+    sha256 "edaf697f69e5f7e52a9dea37073ced549c84a9f960ce0bc81bc6addd4ed29bd9" => :el_capitan
   end
 
   option "with-fftw", "Compile with FFTW support"
@@ -26,10 +26,11 @@ class Imagemagick < Formula
   option "with-zero-configuration", "Disables depending on XML configuration files"
 
   deprecated_option "enable-hdri" => "with-hdri"
+  deprecated_option "with-gcc" => "with-openmp"
   deprecated_option "with-jp2" => "with-openjpeg"
 
   depends_on "pkg-config" => :build
-  depends_on "libtool" => :run
+  depends_on "libtool"
   depends_on "xz"
 
   depends_on "jpeg" => :recommended
@@ -50,9 +51,12 @@ class Imagemagick < Formula
   depends_on "openjpeg" => :optional
   depends_on "fftw" => :optional
   depends_on "pango" => :optional
-  depends_on :perl => ["5.5", :optional]
+  depends_on "perl" => :optional
 
-  needs :openmp if build.with? "openmp"
+  if build.with? "openmp"
+    depends_on "gcc"
+    fails_with :clang
+  end
 
   skip_clean :la
 
@@ -118,7 +122,7 @@ class Imagemagick < Formula
   end
 
   def caveats
-    s = <<-EOS.undent
+    s = <<~EOS
       For full Perl support you may need to adjust your PERL5LIB variable:
         export PERL5LIB="#{HOMEBREW_PREFIX}/lib/perl5/site_perl":$PERL5LIB
     EOS
