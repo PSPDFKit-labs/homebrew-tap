@@ -1,31 +1,32 @@
 class Postgresql < Formula
   desc "Object-relational database system"
   homepage "https://www.postgresql.org/"
-  url "https://ftp.postgresql.org/pub/source/v10.0/postgresql-10.0.tar.bz2"
-  sha256 "712f5592e27b81c5b454df96b258c14d94b6b03836831e015c65d6deeae57fd1"
+  url "https://ftp.postgresql.org/pub/source/v10.3/postgresql-10.3.tar.bz2"
+  sha256 "6ea268780ee35e88c65cdb0af7955ad90b7d0ef34573867f223f14e43467931a"
   head "https://github.com/postgres/postgres.git"
 
   bottle do
-    sha256 "2aedf25913e489c4ce5697dc782923be9df7423cbc388cd7f721681ef44c4312" => :high_sierra
-    sha256 "ab4142490c017612f9d65faef3d78cdd2d02483206d410b11bf7c623db9f077b" => :sierra
-    sha256 "90e5d6b4ce626b7ecdf821bc41d054f5d26772e003540157cea3183695017316" => :el_capitan
+    sha256 "632a988ae9a6b45acd3fca3f05af7dbec02e01fa91814ff8ba238cc20d1a7f38" => :high_sierra
+    sha256 "c5412eb34006856a6f0aca2ca2c69e2b8da706f1c6a6aae200aa81d0cda23207" => :sierra
+    sha256 "0581e9efe089864abbcc938f70a5175ff5595ffd701062bafec0be041ba56258" => :el_capitan
   end
 
   option "without-perl", "Build without Perl support"
   option "without-tcl", "Build without Tcl support"
   option "with-dtrace", "Build with DTrace support"
-  option "with-python", "Enable PL/Python2"
-  option "with-python3", "Enable PL/Python3 (incompatible with --with-python)"
+  option "with-python", "Enable PL/Python3 (incompatible with --with-python@2)"
+  option "with-python@2", "Enable PL/Python2"
 
   deprecated_option "no-perl" => "without-perl"
   deprecated_option "no-tcl" => "without-tcl"
   deprecated_option "enable-dtrace" => "with-dtrace"
+  deprecated_option "with-python3" => "with-python"
 
   depends_on "openssl"
   depends_on "readline"
 
-  depends_on :python => :optional
-  depends_on :python3 => :optional
+  depends_on "python" => :optional
+  depends_on "python@2" => :optional
 
   conflicts_with "postgres-xc",
     :because => "postgresql and postgres-xc install the same binaries."
@@ -62,11 +63,11 @@ class Postgresql < Formula
     args << "--with-perl" if build.with? "perl"
 
     which_python = nil
-    if build.with?("python") && build.with?("python3")
-      odie "Cannot provide both --with-python and --with-python3"
-    elsif build.with?("python") || build.with?("python3")
+    if build.with?("python") && build.with?("python@2")
+      odie "Cannot provide both --with-python and --with-python@2"
+    elsif build.with?("python") || build.with?("python@2")
       args << "--with-python"
-      which_python = which(build.with?("python") ? "python" : "python3")
+      which_python = which(build.with?("python") ? "python3" : "python2.7")
     end
     ENV["PYTHON"] = which_python
 
@@ -98,20 +99,15 @@ class Postgresql < Formula
     end
   end
 
-  def caveats; <<-EOS.undent
-    To migrate existing data from a previous major version of PostgreSQL, see:
-      https://www.postgresql.org/docs/10/static/upgrading.html
-
-      You will need your previous PostgreSQL installation from brew to perform
-      `pg_upgrade` or `pg_dumpall` depending on your upgrade method.
-
-      Do not run `brew cleanup postgresql` until you have performed the migration.
+  def caveats; <<~EOS
+    To migrate existing data from a previous major version of PostgreSQL run:
+      brew postgresql-upgrade-database
     EOS
   end
 
   plist_options :manual => "pg_ctl -D #{HOMEBREW_PREFIX}/var/postgres start"
 
-  def plist; <<-EOS.undent
+  def plist; <<~EOS
     <?xml version="1.0" encoding="UTF-8"?>
     <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
     <plist version="1.0">
@@ -130,6 +126,8 @@ class Postgresql < Formula
       <true/>
       <key>WorkingDirectory</key>
       <string>#{HOMEBREW_PREFIX}</string>
+      <key>StandardOutPath</key>
+      <string>#{var}/log/postgres.log</string>
       <key>StandardErrorPath</key>
       <string>#{var}/log/postgres.log</string>
     </dict>
