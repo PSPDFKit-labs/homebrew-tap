@@ -4,10 +4,10 @@
 $ brew tap pspdfkit-labs/tap
 ```
 
-Pin this tap to give it's formulas priority over the core ones:
+Directly reference a tap to install it over the default one.
 
 ```shell
-$ brew tap-pin pspdfkit-labs/tap
+$ brew reinstall pspdfkit-labs/tap/ccache
 ```
 
 ## License
