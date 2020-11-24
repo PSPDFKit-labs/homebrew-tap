@@ -2,7 +2,7 @@ class Ccache < Formula
   desc "Object-file caching compiler wrapper"
   homepage "https://ccache.dev/"
   url "https://github.com/PSPDFKit-labs/ccache/archive/v4.1.pspdfkit.tar.gz"
-  sha256 "53ad0db2bc91c255c181843b4ecf62fa86b386d5a2d06ab248cb838c5471a7ec"
+  sha256 "940d6ee2a5352596373fefa59c84df4ff66671bff35be8748a3d99097d0d76f9"
   license "GPL-3.0-or-later"
   head "https://github.com/PSPDFKit-lab/ccache.git"
 
